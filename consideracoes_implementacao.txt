@@ -1,0 +1,12 @@
+CONSIDERACOES IMPORTANTES DE IMPLEMENTACAO
+
+1. O banco de registradores terá 33 registradores, sendo o de endereco 00000000 conterá o valor 0;
+2. Os registradores serão endereçados por 8 bits somente para quando existir 4 operandos todos teram 8 bits;
+
+
+POSSIVEIS INSTRUCOES
+1. LOAD DIRETO EX: loadd reg endereco
+2. STORE DIRETO EX: stored reg endereco
+3. STORE IMEDIATO EX: storei reg valordoendereco
+4. MULT EX: mult rc ra rb
+5. DIV EX: div rc ra rb
