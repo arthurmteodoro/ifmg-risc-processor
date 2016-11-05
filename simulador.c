@@ -86,6 +86,7 @@ int main(int argc, char const *argv[])
     /*Decofica a instrucao e executa*/
     Operadores3 op3 = (Operadores3) &IR;
     Operadores2 op2 = (Operadores2) &IR;
+    Operadores op = (Operadores) &IR;
     switch(op3->opcode)
     {
       case ADD:
@@ -94,18 +95,211 @@ int main(int argc, char const *argv[])
         verificaFlags();
         break;
 
-      case 2:		
+      case SUB:
+        RegTemp.valor = registradores[op3->ra] - registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        verificaFlags();
+        break;
 
-      case 15:
-      RegTemp.valor = op2->const16;
-      RegTemp.destino = op2->rc;
-      break;
+      case ZEROS:
+        RegTemp.valor = 0;
+        RegTemp.destino = op3->rc;
+        /*nao e necessario verificar flags uma vez que ja sao fixas*/
+        neg = 0;
+        zero = 1;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case XOR:
+        RegTemp.valor = registradores[op3->ra] ^ registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case OR:
+        RegTemp.valor = registradores[op3->ra] | registradores[op3->rb];
+        RegTemp.destino = op3->rc; 
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case NOT:
+        RegTemp.valor = ~registradores[op3->ra];
+        RegTemp.destino = op3->rc;
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case AND:
+        RegTemp.valor = registradores[op3->ra] & registradores[op3->rb];
+        RegTemp.destino = op3->rc; 
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case ASL:
+        break; 
+
+      case ASR:
+        break;
+
+      case LSL:
+        RegTemp.valor = registradores[op3->ra] << registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case LSR:
+        RegTemp.valor = registradores[op3->ra] >> registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;  
+
+      case PASSA:
+        RegTemp.valor = registradores[op3->ra];
+        RegTemp.destino = op3->rc; 
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break; 
+
+      case LCH:
+        RegTemp.valor = registradores[op2->rc];
+        RegTemp.valor = RegTemp.valor & 0x0000ffff;
+        RegTemp.valor = RegTemp.valor | (((op2->const16 << 16) & 0xffff0000) & 0xffff0000);
+        RegTemp.destino = op2->rc;
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case LCL:
+        RegTemp.valor = registradores[op2->rc];
+        RegTemp.valor = RegTemp.valor & 0xffff0000;
+        RegTemp.valor = RegTemp.valor | (op2->const16 & 0x0000ffff);
+        RegTemp.destino = op2->rc;
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case LOAD:
+        RegTemp.valor = memoria[registradores[op3->ra]];
+        RegTemp.destino = op3->rc;
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case STORE:
+        memoria[registradores[op3->rc]] = registradores[op3->ra];
+        printf("Alteracao ocorrida:\n");
+        printf("MEMORY[%d] = %d\n", registradores[op3->rc], registradores[op3->ra]);
+        printf("\n");
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case JAL:
+        RegTemp.valor = PC;
+        RegTemp.destino = 32;
+        PC = op->endereco;
+        printf("Alteracao ocorrida:\n");
+        printf("PC = %d\n", PC);
+        printf("\n");
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case JR:
+        PC = registradores[32];
+        printf("Alteracao ocorrida:\n");
+        printf("PC = %d\n", PC);
+        printf("\n");
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case BEQ:
+        if(registradores[op3->rc] == registradores[op3->ra])
+          PC = op3->rb;
+        printf("Alteracao ocorrida:\n");
+        printf("PC = %d\n", PC);
+        printf("\n");
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case BNE:
+        if(registradores[op3->rc] != registradores[op3->ra])
+          PC = op3->rb;
+        printf("Alteracao ocorrida:\n");
+        printf("PC = %d\n", PC);
+        printf("\n");
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case J:
+        PC = op->endereco;
+        printf("Alteracao ocorrida:\n");
+        printf("PC = %d\n", PC);
+        printf("\n");
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
    }
 
     /*Escreve o valor nos registradores*/
-    registradores[RegTemp.destino] = RegTemp.valor;
-    printf("R%d = %d\n", RegTemp.destino, RegTemp.valor);
-    printf("\n");
+    if(op3->opcode != STORE || op3->opcode != JR || op3->opcode != BEQ || op3->opcode != BNE ||
+       op3->opcode != J)
+    {
+      registradores[RegTemp.destino] = RegTemp.valor;
+      printf("Alteracao ocorrida:\n");
+      printf("R%d = %d\n", RegTemp.destino, RegTemp.valor);
+      printf("\n");
+    }
 
     /*Busca a proxima isntrucao*/
     IR = memoria[PC];
@@ -151,6 +345,11 @@ int iniciaProcessador(const char* arquivo)
       fprintf(stderr, "ERRO - DIRETIVA ADDRESS INVALIDA\n");
       exit(1);
     }
+  }
+  else
+  {
+    fclose(arq);
+    arq = fopen(arquivo, "rt");
   }
 
   /*carrega os dados da memoria*/
@@ -206,5 +405,5 @@ void verificaFlags(void)
   /*verifica se o valor eh 0*/
   if(RegTemp.valor == 0)
     zero = 1;
-  
+
 }

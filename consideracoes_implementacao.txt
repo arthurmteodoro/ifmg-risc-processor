@@ -1,6 +1,7 @@
 CONSIDERACOES IMPORTANTES DE IMPLEMENTACAO
 
-1. O banco de registradores terá 33 registradores, sendo o de endereco 00000000 conterá o valor 0;
+1. O banco de registradores terá 33 registradores, sendo o de endereco 00000000 conterá o valor 0 e o jal e jr sera 32 no 
+lugar de 31;
 2. Os registradores serão endereçados por 8 bits somente para quando existir 4 operandos todos teram 8 bits;
 
 
