@@ -9,5 +9,6 @@ POSSIVEIS INSTRUCOES
 1. LOAD DIRETO EX: loadd reg endereco
 2. STORE DIRETO EX: stored reg endereco
 3. STORE IMEDIATO EX: storei reg valordoendereco
-4. MULT EX: mult rc ra rb
-5. DIV EX: div rc ra rb
+4. MULT EX: mult rc ra rb --OK
+5. DIV EX: div rc ra rb --OK
+6. OPERACAO COM UM VALOR IMEDIATO EX: addi reg const16

@@ -43,7 +43,7 @@ struct regTemp
 };
 
 enum op_codes{ADD=1,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH,LCL,LOAD,STORE,JAL,JR,
-              BEQ,BNE,J}opcode;
+              BEQ,BNE,J,MULT,DIV}opcode;
 
 /*======================================================================================*/
 /*                                   VARIAVEIS GLOBAIS                                  */
@@ -66,6 +66,12 @@ void verificaFlags(void);
 int main(int argc, char const *argv[])
 {
 
+  if(argc < 2)
+  {
+    fprintf(stderr, "ERRO - ARQUIVO DE ENTRADA NAO EXISTENTE\n");
+    return 1;
+  }
+
   char valor[33];
 
   /*inicia o processador e torna pc a posicao inicial de leitura*/
@@ -87,21 +93,25 @@ int main(int argc, char const *argv[])
     Operadores3 op3 = (Operadores3) &IR;
     Operadores2 op2 = (Operadores2) &IR;
     Operadores op = (Operadores) &IR;
+    printf("\n");
     switch(op3->opcode)
     {
       case ADD:
+        printf("ADD\n");
         RegTemp.valor = registradores[op3->ra] + registradores[op3->rb];
         RegTemp.destino = op3->rc;
         verificaFlags();
         break;
 
       case SUB:
+        printf("SUB\n");
         RegTemp.valor = registradores[op3->ra] - registradores[op3->rb];
         RegTemp.destino = op3->rc;
         verificaFlags();
         break;
 
       case ZEROS:
+        printf("ZEROS\n");
         RegTemp.valor = 0;
         RegTemp.destino = op3->rc;
         /*nao e necessario verificar flags uma vez que ja sao fixas*/
@@ -112,6 +122,7 @@ int main(int argc, char const *argv[])
         break;
 
       case XOR:
+        printf("XOR\n");
         RegTemp.valor = registradores[op3->ra] ^ registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
@@ -121,6 +132,7 @@ int main(int argc, char const *argv[])
         break;
 
       case OR:
+        printf("OR\n");
         RegTemp.valor = registradores[op3->ra] | registradores[op3->rb];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
@@ -130,6 +142,7 @@ int main(int argc, char const *argv[])
         break;
 
       case NOT:
+        printf("NOT\n");
         RegTemp.valor = ~registradores[op3->ra];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
@@ -139,6 +152,7 @@ int main(int argc, char const *argv[])
         break;
 
       case AND:
+        printf("AND\n");
         RegTemp.valor = registradores[op3->ra] & registradores[op3->rb];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
@@ -148,12 +162,15 @@ int main(int argc, char const *argv[])
         break;
 
       case ASL:
+        printf("ASL\n");
         break; 
 
       case ASR:
+        printf("ASR\n");
         break;
 
       case LSL:
+        printf("LSL\n");
         RegTemp.valor = registradores[op3->ra] << registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
@@ -163,6 +180,7 @@ int main(int argc, char const *argv[])
         break;
 
       case LSR:
+        printf("LSR\n");
         RegTemp.valor = registradores[op3->ra] >> registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
@@ -172,6 +190,7 @@ int main(int argc, char const *argv[])
         break;  
 
       case PASSA:
+        printf("PASSA\n");
         RegTemp.valor = registradores[op3->ra];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
@@ -181,6 +200,7 @@ int main(int argc, char const *argv[])
         break; 
 
       case LCH:
+        printf("LCH\n");
         RegTemp.valor = registradores[op2->rc];
         RegTemp.valor = RegTemp.valor & 0x0000ffff;
         RegTemp.valor = RegTemp.valor | (((op2->const16 << 16) & 0xffff0000) & 0xffff0000);
@@ -193,6 +213,7 @@ int main(int argc, char const *argv[])
         break;
 
       case LCL:
+        printf("LCL\n");
         RegTemp.valor = registradores[op2->rc];
         RegTemp.valor = RegTemp.valor & 0xffff0000;
         RegTemp.valor = RegTemp.valor | (op2->const16 & 0x0000ffff);
@@ -205,6 +226,7 @@ int main(int argc, char const *argv[])
         break;
 
       case LOAD:
+        printf("LOAD\n");
         RegTemp.valor = memoria[registradores[op3->ra]];
         RegTemp.destino = op3->rc;
         /*como nao usa flags zera todas*/
@@ -215,6 +237,7 @@ int main(int argc, char const *argv[])
         break;
 
       case STORE:
+        printf("STORE\n");
         memoria[registradores[op3->rc]] = registradores[op3->ra];
         printf("Alteracao ocorrida:\n");
         printf("MEMORY[%d] = %d\n", registradores[op3->rc], registradores[op3->ra]);
@@ -227,12 +250,12 @@ int main(int argc, char const *argv[])
         break;
 
       case JAL:
+        printf("JAL\n");
         RegTemp.valor = PC;
         RegTemp.destino = 32;
         PC = op->endereco;
         printf("Alteracao ocorrida:\n");
         printf("PC = %d\n", PC);
-        printf("\n");
         /*como nao usa flags zera todas*/
         neg = 0;
         zero = 0;
@@ -241,6 +264,7 @@ int main(int argc, char const *argv[])
         break;
 
       case JR:
+        printf("JR\n");
         PC = registradores[32];
         printf("Alteracao ocorrida:\n");
         printf("PC = %d\n", PC);
@@ -253,32 +277,47 @@ int main(int argc, char const *argv[])
         break;
 
       case BEQ:
+        printf("BEQ\n");
         if(registradores[op3->rc] == registradores[op3->ra])
+        {
           PC = op3->rb;
-        printf("Alteracao ocorrida:\n");
-        printf("PC = %d\n", PC);
-        printf("\n");
-        /*como nao usa flags zera todas*/
-        neg = 0;
-        zero = 0;
-        carry = 0;
-        overflow = 0;
+          printf("Alteracao ocorrida:\n");
+          printf("PC = %d\n", PC);
+          printf("\n");
+          /*como nao usa flags zera todas*/
+          neg = 0;
+          zero = 0;
+          carry = 0;
+          overflow = 0;
+        }
+        else
+        {
+          printf("BEQ nao tomado\n");
+        }
         break;
 
       case BNE:
+        printf("BNE\n");
         if(registradores[op3->rc] != registradores[op3->ra])
+        {
           PC = op3->rb;
-        printf("Alteracao ocorrida:\n");
-        printf("PC = %d\n", PC);
-        printf("\n");
-        /*como nao usa flags zera todas*/
-        neg = 0;
-        zero = 0;
-        carry = 0;
-        overflow = 0;
+          printf("Alteracao ocorrida:\n");
+          printf("PC = %d\n", PC);
+          printf("\n");
+          /*como nao usa flags zera todas*/
+          neg = 0;
+          zero = 0;
+          carry = 0;
+          overflow = 0;
+        }
+        else
+        {
+          printf("BNE nao tomado\n");
+        }
         break;
 
       case J:
+        printf("J\n");
         PC = op->endereco;
         printf("Alteracao ocorrida:\n");
         printf("PC = %d\n", PC);
@@ -289,11 +328,29 @@ int main(int argc, char const *argv[])
         carry = 0;
         overflow = 0;
         break;
+
+      case MULT:
+        printf("MULT\n");
+        RegTemp.valor = registradores[op3->ra] * registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        verificaFlags();
+        break;
+
+      case DIV:
+        printf("DIV\n");
+        if(registradores[op3->rb] == 0)
+        {
+          fprintf(stderr, "ERRO - DIVISAO POR 0\n");
+        }
+        RegTemp.valor = registradores[op3->ra] / registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        verificaFlags();
+        break;
+
    }
 
     /*Escreve o valor nos registradores*/
-    if(op3->opcode != STORE || op3->opcode != JR || op3->opcode != BEQ || op3->opcode != BNE ||
-       op3->opcode != J)
+    if((op3->opcode != STORE) && (op3->opcode != JR) && (op3->opcode != BEQ) && (op3->opcode != BNE) && (op3->opcode != J))
     {
       registradores[RegTemp.destino] = RegTemp.valor;
       printf("Alteracao ocorrida:\n");
@@ -308,6 +365,7 @@ int main(int argc, char const *argv[])
     PC++;
     itob(PC, valor, 32);
     printf("PC = %s\n", valor);
+    //sleep(5);
  }
 
   return 0;
