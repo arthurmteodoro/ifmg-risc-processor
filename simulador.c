@@ -43,7 +43,7 @@ struct regTemp
 };
 
 enum op_codes{ADD=1,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH,LCL,LOAD,STORE,JAL,JR,
-              BEQ,BNE,J,MULT,DIV}opcode;
+              BEQ,BNE,J,MULT,DIV, MOD, ADDI, SUBI, MULTI, DIVI, LOADD, STORED}opcode;
 
 /*======================================================================================*/
 /*                                   VARIAVEIS GLOBAIS                                  */
@@ -341,16 +341,81 @@ int main(int argc, char const *argv[])
         if(registradores[op3->rb] == 0)
         {
           fprintf(stderr, "ERRO - DIVISAO POR 0\n");
+          return 1;
         }
         RegTemp.valor = registradores[op3->ra] / registradores[op3->rb];
         RegTemp.destino = op3->rc;
         verificaFlags();
         break;
 
+      case MOD:
+        printf("MOD\n");
+        RegTemp.valor = registradores[op3->ra] % registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        verificaFlags();
+        break;
+
+      case ADDI:
+        printf("ADDI\n");
+        RegTemp.valor = registradores[op3->ra] + op3->rb;
+        RegTemp.destino = op3->rc;
+        verificaFlags();
+        break;
+
+      case SUBI:
+        printf("SUBI\n");
+        RegTemp.valor = registradores[op3->ra] - op3->rb;
+        RegTemp;destino = op3->rc;
+        verificaFlags();
+        break;
+
+      case MULTI:
+        printf("MULTI\n");
+        RegTemp.valor = registradores[op3->ra] * op3->rb;
+        RegTemp.destino = op3->rc;
+        verificaFlags();
+        break;
+
+      case DIVI:
+        printf("DIVI\n");
+        if(op3->rb == 0)
+        {
+          fprintf(stderr, "ERRO - DIVISAO POR 0\n");
+          return 1;
+        }
+        RegTemp.valor = registradores[op3->ra] / op3->rb;
+        RegTemp.destino = op3->rc;
+        verificaFlags();
+        break;
+
+      case LOADD:
+        printf("LOADD\n");
+        RegTemp.valor = memoria[op2->const16];
+        RegTemp.destino = op2->rc;
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
+
+      case STORED:
+        printf("STORED\n");
+        memoria[op2->const16] = registradores[op3->rc];
+        printf("Alteracao ocorrida:\n");
+        printf("MEMORY[%d] = %d\n", op2->const16, registradores[op3->rc]);
+        printf("\n");
+        /*como nao usa flags zera todas*/
+        neg = 0;
+        zero = 0;
+        carry = 0;
+        overflow = 0;
+        break;
    }
 
     /*Escreve o valor nos registradores*/
-    if((op3->opcode != STORE) && (op3->opcode != JR) && (op3->opcode != BEQ) && (op3->opcode != BNE) && (op3->opcode != J))
+    if((op3->opcode != STORE) && (op3->opcode != JR) && (op3->opcode != BEQ) && (op3->opcode != BNE) && (op3->opcode != J)
+    && (op3->opcode != STORED))
     {
       registradores[RegTemp.destino] = RegTemp.valor;
       printf("Alteracao ocorrida:\n");

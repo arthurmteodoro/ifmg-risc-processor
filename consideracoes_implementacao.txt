@@ -6,9 +6,12 @@ lugar de 31;
 
 
 POSSIVEIS INSTRUCOES
-1. LOAD DIRETO EX: loadd reg endereco
-2. STORE DIRETO EX: stored reg endereco
-3. STORE IMEDIATO EX: storei reg valordoendereco
-4. MULT EX: mult rc ra rb --OK
-5. DIV EX: div rc ra rb --OK
-6. OPERACAO COM UM VALOR IMEDIATO EX: addi reg const16
+1. LOAD DIRETO EX: loadd reg endereco --OK
+2. STORE DIRETO EX: stored reg endereco --OK
+3. MULT EX: mult rc ra rb --OK
+4. DIV EX: div rc ra rb --OK
+5. ADD COM VALOR IMEDIATO EX: addi rc ra const8 --OK
+6. SUB COM VALOR IMEDIATO EX: subi rc ra const8 --OK
+7. MULT COM VALOR IMEDIATO EX: multi rc ra const8 --OK
+8. DIV COM VALOR IMEDIATO EX: divi rc ra const8 --OK
+9. MOD EX: mod rc ra rb --OK
