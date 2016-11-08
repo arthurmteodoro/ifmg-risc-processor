@@ -42,7 +42,9 @@ struct regTemp
   int destino;
 };
 
-enum op_codes{ADD=1,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH,LCL,LOAD,STORE,JAL,JR,
+#define HALT 0xffffffff
+
+enum op_codes{NOP,ADD,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH,LCL,LOAD,STORE,JAL,JR,
               BEQ,BNE,J,MULT,DIV, MOD, ADDI, SUBI, MULTI, DIVI, LOADD, STORED}opcode;
 
 /*======================================================================================*/
@@ -76,6 +78,7 @@ int main(int argc, char const *argv[])
 
   /*inicia o processador e torna pc a posicao inicial de leitura*/
   PC = iniciaProcessador(argv[1]);
+  printf("SIMULACAO INICIADA\n");
 
   /*busca instrucao*/
   IR = memoria[PC];
@@ -86,7 +89,7 @@ int main(int argc, char const *argv[])
   printf("PC = %s\n", valor);
 
   /*executa enquanto nao for HALT(todos os bits 1)*/
-  while(IR != 0xffffffff)
+  while(IR != HALT)
   {
 
     /*Decofica a instrucao e executa*/
@@ -96,6 +99,11 @@ int main(int argc, char const *argv[])
     printf("\n");
     switch(op3->opcode)
     {
+
+      case NOP:
+        printf("NOP\n");
+        break;
+
       case ADD:
         printf("ADD\n");
         RegTemp.valor = registradores[op3->ra] + registradores[op3->rb];
@@ -365,7 +373,7 @@ int main(int argc, char const *argv[])
       case SUBI:
         printf("SUBI\n");
         RegTemp.valor = registradores[op3->ra] - op3->rb;
-        RegTemp;destino = op3->rc;
+        RegTemp.destino = op3->rc;
         verificaFlags();
         break;
 
