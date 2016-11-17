@@ -99,9 +99,8 @@ int primeiroPasso(Hash enderecos, const char* entrada)
   /*abre o arquivo de entrada e variaveis usadas*/
   FILE* arq = fopen(entrada, "rt");
   char linha[35];
-  int PC = 0, i, dadosInicio = 0;
+  int PC = 0, dadosInicio = 0;
   char bin[33];
-  char valor[33];
   char *token;
   Palavra endereco;
 
@@ -201,6 +200,7 @@ void segundoPasso(Hash opcode, Hash registradores, Hash enderecos, const char* e
         }
 
         /*pega o opcode e analisa e insere no vetor temporario*/
+        /*caso for nop ou halt coloca o endereco no arquivo e para o split*/
         conteudo = buscaHash(opcode, token);
         if(!strcmp(token, "NOP") || !strcmp(token, "HALT"))
         {
@@ -256,13 +256,14 @@ void segundoPasso(Hash opcode, Hash registradores, Hash enderecos, const char* e
         conteudo = buscaHash(enderecos, token);
         if(conteudo != NULL)
         {
-
           /*caso tenha so um operando o endereco sera de 24 bits*/
           if(quantOperando == 1)
           {
             strcpy(valor, retornaBinario(conteudo));
             val = strtol(valor, NULL, 2);
-            val = val + inicio;
+            /*caso o valor que se encontre na operacao seja um label*/
+            if(token[0] != '[')
+              val = val + inicio;
             itob(val, bin, 24);
             sprintf(valor, "%s", bin);
             strcat(temp, valor);
@@ -273,7 +274,9 @@ void segundoPasso(Hash opcode, Hash registradores, Hash enderecos, const char* e
           {
             strcpy(valor, retornaBinario(conteudo));
             val = strtol(valor, NULL, 2);
-            val = val + inicio;
+            /*caso o valor que se encontre na operacao seja um label*/
+            if(token[0] != '[')
+              val = val + inicio;
             itob(val, bin, 16);
             sprintf(valor, "%s", bin);
             strcat(temp, valor);
@@ -284,7 +287,9 @@ void segundoPasso(Hash opcode, Hash registradores, Hash enderecos, const char* e
           {
             strcpy(valor, retornaBinario(conteudo));
             val = strtol(valor, NULL, 2);
-            val = val + inicio;
+            /*caso o valor que se encontre na operacao seja um label*/
+            if(token[0] != '[')
+              val = val + inicio;
             itob(val, bin, 8);
             sprintf(valor, "%s", bin);
             strcat(temp, valor);

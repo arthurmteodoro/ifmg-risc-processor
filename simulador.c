@@ -79,14 +79,14 @@ int main(int argc, char const *argv[])
   /*inicia o processador e torna pc a posicao inicial de leitura*/
   PC = iniciaProcessador(argv[1]);
   printf("SIMULACAO INICIADA\n");
+  printf("PC inicial %d\n", PC);
 
   /*busca instrucao*/
   IR = memoria[PC];
   itob(IR, valor, 32);
   printf("IR = %s\n", valor);
   PC++;
-  itob(PC, valor, 32);
-  printf("PC = %s\n", valor);
+  printf("PC = %d\n", PC);
 
   /*executa enquanto nao for HALT(todos os bits 1)*/
   while(IR != HALT)
@@ -171,15 +171,29 @@ int main(int argc, char const *argv[])
 
       case ASL:
         printf("ASL\n");
+        RegTemp.valor = registradores[op3->ra] << registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;
         break; 
 
       case ASR:
         printf("ASR\n");
+        RegTemp.valor = registradores[op3->ra] >> registradores[op3->rb];
+        RegTemp.destino = op3->rc;
+        /*verifica as flags mas carry e overflow sao fixas*/
+        verificaFlags();
+        carry = 0;
+        overflow = 0;
+        break;  
         break;
 
       case LSL:
         printf("LSL\n");
-        RegTemp.valor = registradores[op3->ra] << registradores[op3->rb];
+        RegTemp.valor = (unsigned int) registradores[op3->ra] << (unsigned int) registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
         verificaFlags();
@@ -189,7 +203,7 @@ int main(int argc, char const *argv[])
 
       case LSR:
         printf("LSR\n");
-        RegTemp.valor = registradores[op3->ra] >> registradores[op3->rb];
+        RegTemp.valor = (unsigned int) registradores[op3->ra] >> (unsigned int) registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
         verificaFlags();
@@ -419,6 +433,11 @@ int main(int argc, char const *argv[])
         carry = 0;
         overflow = 0;
         break;
+
+      default:
+        fprintf(stderr, "ERRO - INSTRUCAO NAO EXISTENTE\n");
+        exit(1);
+        break;
    }
 
     /*Escreve o valor nos registradores*/
@@ -436,9 +455,7 @@ int main(int argc, char const *argv[])
     itob(IR, valor, 32);
     printf("IR = %s\n", valor);
     PC++;
-    itob(PC, valor, 32);
-    printf("PC = %s\n", valor);
-    //sleep(5);
+    printf("PC = %d\n", PC);
  }
 
   return 0;
@@ -458,7 +475,7 @@ int iniciaProcessador(const char* arquivo)
   if(arq == NULL)
   {
     fprintf(stderr, "ERRO - ARQUIVO NAO EXISTENTE\n");
-    return 1;
+    exit(1);
   }
 
   char linha[34];
