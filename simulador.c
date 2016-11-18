@@ -44,8 +44,8 @@ struct regTemp
 
 #define HALT 0xffffffff
 
-enum op_codes{NOP,ADD,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH,LCL,LOAD,STORE,JAL,JR,
-              BEQ,BNE,J,MULT,DIV, MOD, ADDI, SUBI, MULTI, DIVI, LOADD, STORED}opcode;
+enum op_codes{NOP,ADD,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH = 14,LCL,LOAD,STORE,JAL = 32,JR,
+              BEQ,BNE,J,MULT = 64,DIV, MOD, ADDI, SUBI, MULTI, DIVI, LOADD, STORED}opcode;
 
 /*======================================================================================*/
 /*                                   VARIAVEIS GLOBAIS                                  */
@@ -320,9 +320,9 @@ int main(int argc, char const *argv[])
 
       case BNE:
         printf("BNE\n");
-        if(registradores[op3->rc] != registradores[op3->ra])
+        if(registradores[op3->ra] != registradores[op3->rb])
         {
-          PC = op3->rb;
+          PC = op3->rc;
           printf("Alteracao ocorrida:\n");
           printf("PC = %d\n", PC);
           printf("\n");
