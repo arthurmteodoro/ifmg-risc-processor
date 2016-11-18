@@ -11,9 +11,9 @@
 /*======================================================================================*/
 struct operadores3
 {
+  unsigned int rc:8;
   unsigned int rb:8;
   unsigned int ra:8;
-  unsigned int rc:8;
   unsigned int opcode:8;
 };
 
@@ -21,8 +21,8 @@ typedef struct operadores3 *Operadores3;
 
 struct operadores2
 {
-  unsigned int const16:16;
   unsigned int rc:8;
+  unsigned int const16:16;
   unsigned int opcode:8;
 };
 
@@ -300,9 +300,9 @@ int main(int argc, char const *argv[])
 
       case BEQ:
         printf("BEQ\n");
-        if(registradores[op3->rc] == registradores[op3->ra])
+        if(registradores[op3->ra] == registradores[op3->rb])
         {
-          PC = op3->rb;
+          PC = op3->rc;
           printf("Alteracao ocorrida:\n");
           printf("PC = %d\n", PC);
           printf("\n");

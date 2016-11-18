@@ -19,6 +19,7 @@ enum op_codes{NOP,ADD,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH,LCL,LOA
 /*                                   PROTOTIPOS DE FUNCAO                               */
 /*======================================================================================*/
 static void itob(int valor, char* string, int quantBits);
+static void converteUpperLower(char* linha);
 static void preencheOpcodes(Hash opcodes);
 static void preencheRegistradores(Hash registradores);
 static int primeiroPasso(Hash enderecos, const char* entrada);
@@ -114,8 +115,10 @@ int primeiroPasso(Hash enderecos, const char* entrada)
       if(linha[strlen(linha)-1] == '\n')
         linha[strlen(linha)-1] = '\0';
 
+      converteUpperLower(linha);
+
       /*faz o split da linha*/
-      token = strtok(linha, " ");
+      token = strtok(linha, " ,");
       while(token != NULL)
       {
 
@@ -145,7 +148,7 @@ int primeiroPasso(Hash enderecos, const char* entrada)
           }
         }
 
-        token = strtok(NULL, " ");
+        token = strtok(NULL, " ,");
 
       }
       PC++;
@@ -189,7 +192,9 @@ void segundoPasso(Hash opcode, Hash registradores, Hash enderecos, const char* e
       if(linha[strlen(linha)-1] == '\n')
         linha[strlen(linha)-1] = '\0';
 
-      token = strtok(linha, " ");
+      converteUpperLower(linha);
+
+      token = strtok(linha, " ,");
       while(token != NULL)
       {
         
@@ -298,7 +303,7 @@ void segundoPasso(Hash opcode, Hash registradores, Hash enderecos, const char* e
         }
 
         quantOperando++;
-        token = strtok(NULL, " ");
+        token = strtok(NULL, " ,");
       }
 
       if(strlen(temp) != 0)
@@ -318,6 +323,19 @@ void segundoPasso(Hash opcode, Hash registradores, Hash enderecos, const char* e
 
   fclose(arqEntrada);
   fclose(arqSaida);
+}
+
+/*======================================================================================*/
+/*PREENCHE OPCODES - FUNCAO QUE INSERE OS OPCODES NA HASH                               */
+/*IN: HASH DE OPCODES                                                          OUT: VOID*/
+/*======================================================================================*/
+void converteUpperLower(char* linha)
+{
+  int i;
+  for(i = 0; i < strlen(linha); i++)
+  {
+    linha[i] = toupper(linha[i]);
+  }
 }
 
 /*======================================================================================*/
