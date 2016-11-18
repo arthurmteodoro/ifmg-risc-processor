@@ -1,13 +1,13 @@
-LCL R1, #1 0
-LCL R2, #5 1
-lcl R4, #1 2
-PASSA R3, R2 3
+lcl r1, 1
+lcl r2, 5
+lcl r4, 1
+passa r3, r2
 
 LABEL2:
-BEQ R3,R0,LABEL1 4
-MULT R1,R1,R3 5
-SUB R3,R3,R4 6
-J LABEL2 7
+beq r3,r0,LABEL1
+mult r1,r1,r3
+sub r3,r3,r4
+j LABEL2
 
 LABEL1:
-HALT 8
+halt
