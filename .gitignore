@@ -1,3 +1,5 @@
 *.o
-trabalho*.pdf
+*trabalho*.pdf
+padrao*.pdf
 *.out
+*.bin
