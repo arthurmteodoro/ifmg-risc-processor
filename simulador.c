@@ -60,7 +60,7 @@ struct regTemp RegTemp;
 /*======================================================================================*/
 int iniciaProcessador(const char* arquivo);
 void itob(int valor, char* string, int quantBits);
-void verificaFlags(void);
+void verificaFlags(Operadores3 op3);
 
 /*======================================================================================*/
 /*                                        FUNCAO MAIN                                   */
@@ -108,14 +108,14 @@ int main(int argc, char const *argv[])
         printf("ADD\n");
         RegTemp.valor = registradores[op3->ra] + registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case SUB:
         printf("SUB\n");
         RegTemp.valor = registradores[op3->ra] - registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case ZEROS:
@@ -134,7 +134,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] ^ registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -144,7 +144,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] | registradores[op3->rb];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -154,7 +154,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = ~registradores[op3->ra];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -164,7 +164,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] & registradores[op3->rb];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -174,10 +174,9 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] << registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
-        break;
         break; 
 
       case ASR:
@@ -185,7 +184,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] >> registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;  
@@ -196,7 +195,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = (unsigned int) registradores[op3->ra] << (unsigned int) registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -206,7 +205,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = (unsigned int) registradores[op3->ra] >> (unsigned int) registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;  
@@ -216,7 +215,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break; 
@@ -355,7 +354,7 @@ int main(int argc, char const *argv[])
         printf("MULT\n");
         RegTemp.valor = registradores[op3->ra] * registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case DIV:
@@ -367,35 +366,37 @@ int main(int argc, char const *argv[])
         }
         RegTemp.valor = registradores[op3->ra] / registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case MOD:
         printf("MOD\n");
         RegTemp.valor = registradores[op3->ra] % registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(NULL);
+        carry = 0;
+        overflow = 0;
         break;
 
       case ADDI:
         printf("ADDI\n");
         RegTemp.valor = registradores[op3->ra] + op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case SUBI:
         printf("SUBI\n");
         RegTemp.valor = registradores[op3->ra] - op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case MULTI:
         printf("MULTI\n");
         RegTemp.valor = registradores[op3->ra] * op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case DIVI:
@@ -407,7 +408,7 @@ int main(int argc, char const *argv[])
         }
         RegTemp.valor = registradores[op3->ra] / op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case LOADD:
@@ -543,7 +544,7 @@ void itob(int valor, char* string, int quantBits)
 /*VERIFICA FLAGS - FUNCAO QUE VERIFICA AS FLAGS DO REGISTRADOR TEMPORARIO               */
 /*IN: VOID                                                                     OUT: VOID*/
 /*======================================================================================*/
-void verificaFlags(void)
+void verificaFlags(Operadores3 op3)
 {
 
   /*caso o valor for negativo - bit mais significativo igual 1*/
@@ -553,5 +554,42 @@ void verificaFlags(void)
   /*verifica se o valor eh 0*/
   if(RegTemp.valor == 0)
     zero = 1;
+
+  /*verifica se existe carry e overflow caso op3 nao for nulo*/
+  if(op3 != NULL)
+  {
+
+    /*verifica overflow*/
+    overflow = 0;
+    /*verifica o overflow que pode aconter em somas*/
+    if(op3->opcode == ADD || op3->opcode == MULT || op3->opcode == ADDI || op3->opcode == MULTI)
+    {
+      if(op3->ra >= 0 && op3->rb >= 0 && RegTemp.valor < 0)
+        overflow = 1;
+      else if(op3->ra < 0 && op3->rb < 0 && RegTemp.valor >= 0)
+             overflow = 1;
+    }
+
+    /*verifica o overflow que pode acontecer em subtracao*/
+    if(op3->opcode == SUB || op3->opcode == DIV || op3->opcode == SUBI || op3->opcode == DIVI)
+    {
+      if(op3->ra >= 0 && op3->rb < 0 && RegTemp.valor < 0)
+        overflow = 1;
+      else if(op3->ra < 0 && op3->rb >= 0 && RegTemp.valor >= 0)
+             overflow = 1;
+    }
+
+    /*verifica carry*/
+    carry = 0;
+    int MSBRa = op3->ra >> 31;
+    int MSBRb = op3->ra >> 31;
+    int MSBRc = RegTemp.valor >> 31;
+
+    if(MSBRa == 1 && MSBRc == 1)
+      carry = 1;
+    else if((MSBRa == 1 && MSBRb == 0) || (MSBRa == 0 && MSBRb == 1))
+      carry = !MSBRc;
+
+  }
 
 }
