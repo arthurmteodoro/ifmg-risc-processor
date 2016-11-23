@@ -1,4 +1,5 @@
-LCL R1 #2
-LCL R2 #2
-ADD R3 R1 R2
-HALT
+lcl r1, 2
+lcl r2, 2
+add r3 r1 r2
+stored r3 [A]
+halt

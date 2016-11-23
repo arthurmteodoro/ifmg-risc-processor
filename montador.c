@@ -571,6 +571,10 @@ void converteLowerUpper(char* linha)
   }
 }
 
+/*======================================================================================*/
+/*PREENCHE OPCODES - FUNCAO QUE INSERE OS OPCODES NA HASH                               */
+/*IN: HASH DE OPCODES                                                          OUT: VOID*/
+/*======================================================================================*/
 void geraLinha(void* ed, int quantOp, char* linha)
 {
   char bin[33];
@@ -628,6 +632,10 @@ void geraLinha(void* ed, int quantOp, char* linha)
   strcpy(linha, lin);
 }
 
+/*======================================================================================*/
+/*PREENCHE OPCODES - FUNCAO QUE INSERE OS OPCODES NA HASH                               */
+/*IN: HASH DE OPCODES                                                          OUT: VOID*/
+/*======================================================================================*/
 int verificaRegistrador(char* token)
 {
   if((token[0] == 'R' && isdigit(token[1]) && isdigit(token[2])) || 

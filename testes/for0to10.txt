@@ -1,9 +1,10 @@
-LCL R1 10
+lcl r1, 0
+lcl r2, 10
 
-LABEL1:
-BEQ R1 R0 LABEL2
-SUBI R1 R1 1
-J LABEL1
+l1:
+beq r1 r2 l2
+addi r1, r1, 1
+j l1
 
-LABEL2:
-HALT
+l2:
+halt
