@@ -123,7 +123,7 @@ int primeiroPasso(Hash enderecos, const char* entrada)
   {
 
     /*caso a linha for vazia nao faz nada*/
-    if(strlen(linha) > 1)
+    if(strlen(linha) > 1 && linha[0] != '#')
     {
 
       if(linha[strlen(linha)-1] == '\n')
@@ -132,7 +132,7 @@ int primeiroPasso(Hash enderecos, const char* entrada)
       converteLowerUpper(linha);
 
       /*faz o split da linha*/
-      token = strtok(linha, " ,");
+      token = strtok(linha, " ,#");
       while(token != NULL)
       {
 
@@ -162,7 +162,7 @@ int primeiroPasso(Hash enderecos, const char* entrada)
           }
         }
 
-        token = strtok(NULL, " ,");
+        token = strtok(NULL, " ,#");
 
       }
       PC++;
@@ -201,7 +201,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
   {
 
     /*caso nao for uma linha vazia*/
-    if(strlen(linha) > 1)
+    if(strlen(linha) > 1 && linha[0] != '#')
     {
 
       /*manipula a linha para nao conter \n e coloca em uppercase*/
@@ -211,7 +211,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
       converteLowerUpper(linha);
 
       /*verifica se a linha é um rotulo ou nao*/
-      token = strtok(linha, " ,");
+      token = strtok(linha, " ,#");
       if(token[strlen(token)-1] != ':')
       {
         if(!strcmp(token, "NOP"))
@@ -222,25 +222,25 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "ADD"))
         {
           strcpy(op3.opcode, "00000001");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "SUB"))
         {
           strcpy(op3.opcode, "00000010");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "ZEROS"))
         {
           strcpy(op3.opcode, "00000011");
-          strcpy(op3.rc, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
           strcpy(op3.ra, "0");
           strcpy(op3.rb, "0");
           geraLinha((void*) &op3, 3, temp);
@@ -249,26 +249,26 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "XOR"))
         {
           strcpy(op3.opcode, "00000100");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "OR"))
         {
           strcpy(op3.opcode, "00000101");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "NOT"))
         {
           strcpy(op3.opcode, "00000110");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
           strcpy(op3.rb, "0");
           geraLinha((void*) &op3, 3, temp);
         }
@@ -276,53 +276,53 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "AND"))
         {
           strcpy(op3.opcode, "00000111");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "ASL"))
         {
           strcpy(op3.opcode, "00001000");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "ASR"))
         {
           strcpy(op3.opcode, "00001001");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "LSL"))
         {
           strcpy(op3.opcode, "00001010");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "LSR"))
         {
           strcpy(op3.opcode, "00001011");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "PASSA"))
         {
           strcpy(op3.opcode, "00001100");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
           strcpy(op3.rb, "0");
           geraLinha((void*) &op3, 3, temp);
         }
@@ -330,24 +330,24 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "LCH"))
         {
           strcpy(op2.opcode, "00001110");
-          strcpy(op2.rc, strtok(NULL, " ,"));
-          strcpy(op2.end, strtok(NULL, " ,"));
+          strcpy(op2.rc, strtok(NULL, " ,#"));
+          strcpy(op2.end, strtok(NULL, " ,#"));
           geraLinha((void*) &op2, 2, temp);
         }
         else
         if(!strcmp(token, "LCL"))
         {
           strcpy(op2.opcode, "00001111");
-          strcpy(op2.rc, strtok(NULL, " ,"));
-          strcpy(op2.end, strtok(NULL, " ,"));
+          strcpy(op2.rc, strtok(NULL, " ,#"));
+          strcpy(op2.end, strtok(NULL, " ,#"));
           geraLinha((void*) &op2, 2, temp);
         }
         else
         if(!strcmp(token, "LOAD"))
         {
           strcpy(op3.opcode, "00010000");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
           strcpy(op3.rb, "0");
           geraLinha((void*) &op3, 3, temp);
         }
@@ -355,8 +355,8 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "STORE"))
         {
           strcpy(op3.opcode, "00010001");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
           strcpy(op3.rb, "0");
           geraLinha((void*) &op3, 3, temp);
         }
@@ -364,7 +364,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "JAL"))
         {
           strcpy(op.opcode, "00100000");
-          rotulo = strtok(NULL, " ,");
+          rotulo = strtok(NULL, " ,#");
           /*caso o primeiro caractere for uma letra eh um rotulo*/
           if(isalpha(rotulo[0]))
           {
@@ -373,7 +373,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
             strcpy(op.end, valor);
           }
           else
-            strcpy(op.end, strtok(NULL, " ,"));
+            strcpy(op.end, strtok(NULL, " ,#"));
 
           geraLinha((void*) &op, 1, temp);
         }
@@ -381,7 +381,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "JR"))
         {
           strcpy(op3.opcode, "00100001");
-          strcpy(op3.rc, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
           strcpy(op3.ra, "0");
           strcpy(op3.rb, "0");
           geraLinha((void*) &op3, 3, temp);
@@ -390,9 +390,9 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "BEQ"))
         {
           strcpy(op3.opcode, "00100010");
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
-          rotulo = strtok(NULL, " ,");
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
+          rotulo = strtok(NULL, " ,#");
           /*caso o primeiro caractere for uma letra eh um rotulo*/
           if(isalpha(rotulo[0]))
           {
@@ -401,7 +401,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
             strcpy(op3.rc, valor);
           }
           else
-            strcpy(op3.rc, strtok(NULL, " ,"));
+            strcpy(op3.rc, strtok(NULL, " ,#"));
 
           geraLinha((void*) &op3, 3, temp);
         }
@@ -409,9 +409,9 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "BNE"))
         {
           strcpy(op3.opcode, "00100011");
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
-          rotulo = strtok(NULL, " ,");
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
+          rotulo = strtok(NULL, " ,#");
           /*caso o primeiro caractere for uma letra eh um rotulo*/
           if(isalpha(rotulo[0]))
           {
@@ -420,7 +420,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
             strcpy(op3.rc, valor);
           }
           else
-            strcpy(op3.rc, strtok(NULL, " ,"));
+            strcpy(op3.rc, strtok(NULL, " ,#"));
 
           geraLinha((void*) &op3, 3, temp);
         }
@@ -428,7 +428,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "J"))
         {
           strcpy(op.opcode, "00100100");
-          rotulo = strtok(NULL, " ,");
+          rotulo = strtok(NULL, " ,#");
           /*caso o primeiro caractere for uma letra eh um rotulo*/
           if(isalpha(rotulo[0]))
           {
@@ -437,7 +437,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
             strcpy(op.end, valor);
           }
           else
-            strcpy(op.end, strtok(NULL, " ,"));
+            strcpy(op.end, strtok(NULL, " ,#"));
 
           geraLinha((void*) &op, 1, temp);
         }
@@ -445,71 +445,71 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
         if(!strcmp(token, "MULT"))
         {
           strcpy(op3.opcode, "01000000");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "DIV"))
         {
           strcpy(op3.opcode, "01000001");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "MOD"))
         {
           strcpy(op3.opcode, "01000010");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "ADDI"))
         {
           strcpy(op3.opcode, "01000011");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "SUBI"))
         {
           strcpy(op3.opcode, "01000100");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "MULTI"))
         {
           strcpy(op3.opcode, "01000101");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "DIVI"))
         {
           strcpy(op3.opcode, "01000110");
-          strcpy(op3.rc, strtok(NULL, " ,"));
-          strcpy(op3.ra, strtok(NULL, " ,"));
-          strcpy(op3.rb, strtok(NULL, " ,"));
+          strcpy(op3.rc, strtok(NULL, " ,#"));
+          strcpy(op3.ra, strtok(NULL, " ,#"));
+          strcpy(op3.rb, strtok(NULL, " ,#"));
           geraLinha((void*) &op3, 3, temp);
         }
         else
         if(!strcmp(token, "LOADD"))
         {
           strcpy(op2.opcode, "01000111");
-          strcpy(op2.rc, strtok(NULL, " ,"));
-          rotulo = strtok(NULL, " ,");
+          strcpy(op2.rc, strtok(NULL, " ,#"));
+          rotulo = strtok(NULL, " ,#");
           /*caso o primeiro caractere for uma letra eh um rotulo*/
           if(rotulo[0] == '[' && isalpha(rotulo[1]))
           {
@@ -518,15 +518,15 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
             strcpy(op2.end, valor);
           }
           else
-            strcpy(op2.end, strtok(NULL, " ,"));
+            strcpy(op2.end, strtok(NULL, " ,#"));
           geraLinha((void*) &op2, 2, temp);
         }
         else
         if(!strcmp(token, "STORED"))
         {
           strcpy(op2.opcode, "01001000");
-          strcpy(op2.rc, strtok(NULL, " ,"));
-          rotulo = strtok(NULL, " ,");
+          strcpy(op2.rc, strtok(NULL, " ,#"));
+          rotulo = strtok(NULL, " ,#");
           /*caso o primeiro caractere for uma letra eh um rotulo*/
           if(rotulo[0] == '[' && isalpha(rotulo[1]))
           {
@@ -535,7 +535,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
             strcpy(op2.end, valor);
           }
           else
-            strcpy(op2.end, strtok(NULL, " ,"));
+            strcpy(op2.end, strtok(NULL, " ,#"));
           geraLinha((void*) &op2, 2, temp);
         }
         else

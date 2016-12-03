@@ -1,0 +1,13 @@
+lcl r1, 1 #resultado
+lcl r2, 11 #numero limite
+lcl r3 1 #contador
+
+#for que multiplica e soma +1
+l1:
+beq r3, r2, l2
+multi r1 r3 2
+addi r3 r3 1
+j l1
+
+l2:
+halt
