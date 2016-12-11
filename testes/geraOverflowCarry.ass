@@ -1,0 +1,21 @@
+#r1 tera 7fffffff
+lcl r1 65355 #carrega ffff para os bits menos significativos
+lch r1 32767 #carrega 7fff para os bits mais significativos
+
+#r2 tera 7fffffff
+lcl r2 65355 #carrega ffff para os bits menos significativos
+lch r2 32767 #carrega 7fff para os bits mais significativos
+
+#r3 tera ffffffff
+lcl r3 65535
+lch r3 65535
+
+#r4 tera ffffffff
+lcl r4 65535
+lch r4 65535
+
+#faz a soma
+add r5 r1 r2
+add r6 r3 r4
+
+halt

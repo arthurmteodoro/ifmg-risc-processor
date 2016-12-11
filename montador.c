@@ -16,23 +16,23 @@ enum op_codes{NOP,ADD,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH = 14,LC
 
 typedef struct
 {
-  char opcode[15];
-  char ra[15];
-  char rb[15];
-  char rc[15];
+  char opcode[300];
+  char ra[300];
+  char rb[300];
+  char rc[300];
 } operador3;
 
 typedef struct
 {
-  char opcode[15];
-  char end[15];
-  char rc[15];
+  char opcode[300];
+  char end[300];
+  char rc[300];
 } operador2;
 
 typedef struct
 {
-  char opcode[15];
-  char end[15];
+  char opcode[300];
+  char end[300];
 } operador;
 
 /*======================================================================================*/
@@ -113,13 +113,13 @@ int primeiroPasso(Hash enderecos, const char* entrada)
 {
   /*abre o arquivo de entrada e variaveis usadas*/
   FILE* arq = fopen(entrada, "rt");
-  char linha[35];
+  char linha[300];
   int PC = 0, dadosInicio = 0;
   char bin[33];
   char *token;
   Palavra endereco;
 
-  while(fgets(linha, 35, arq) != NULL)
+  while(fgets(linha, 300, arq) != NULL)
   {
 
     /*caso a linha for vazia nao faz nada*/
@@ -150,7 +150,7 @@ int primeiroPasso(Hash enderecos, const char* entrada)
         if(token[0] == '[')
         {
           
-          if(!isdigit(token[1]))
+          if(isalpha(token[1]))
           {
             endereco = buscaHash(enderecos, token);
             if(endereco == NULL)
@@ -182,7 +182,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
  /*abre os dois arquivos e variaveis usadas*/
   FILE* arqEntrada = fopen(entrada, "rt");
   FILE* arqSaida = fopen(saida, "wt");
-  char linha[35];
+  char linha[300];
   char valor[33];
   char temp[33] = "";
   char *token;
@@ -197,7 +197,7 @@ void segundoPasso(Hash enderecos, const char* entrada, const char* saida, int in
   fprintf(arqSaida, "address ");
   fprintf(arqSaida, "%s\n", valor);
 
-  while(fgets(linha, 35, arqEntrada) != NULL)
+  while(fgets(linha, 300, arqEntrada) != NULL)
   {
 
     /*caso nao for uma linha vazia*/

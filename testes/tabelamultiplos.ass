@@ -1,0 +1,11 @@
+lcl r1 2
+lcl r2 128
+lcl r3 1
+
+loop:
+beq r1 r2 final
+asl r1 r1 r3
+j loop
+
+final:
+halt
