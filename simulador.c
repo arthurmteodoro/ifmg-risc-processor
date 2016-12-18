@@ -11,9 +11,9 @@
 /*======================================================================================*/
 struct operadores3
 {
+  unsigned int rc:8;
   unsigned int rb:8;
   unsigned int ra:8;
-  unsigned int rc:8;
   unsigned int opcode:8;
 };
 
@@ -21,8 +21,8 @@ typedef struct operadores3 *Operadores3;
 
 struct operadores2
 {
-  unsigned int const16:16;
   unsigned int rc:8;
+  unsigned int const16:16;
   unsigned int opcode:8;
 };
 
@@ -44,14 +44,14 @@ struct regTemp
 
 #define HALT 0xffffffff
 
-enum op_codes{NOP,ADD,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH,LCL,LOAD,STORE,JAL,JR,
-              BEQ,BNE,J,MULT,DIV, MOD, ADDI, SUBI, MULTI, DIVI, LOADD, STORED}opcode;
+enum op_codes{NOP,ADD,SUB,ZEROS,XOR,OR,NOT,AND,ASL,ASR,LSL,LSR,PASSA,LCH = 14,LCL,LOAD,STORE,JAL = 32,JR,
+              BEQ,BNE,J,MULT = 64,DIV, MOD, ADDI, SUBI, MULTI, DIVI, LOADD, STORED}opcode;
 
 /*======================================================================================*/
 /*                                   VARIAVEIS GLOBAIS                                  */
 /*======================================================================================*/
-int memoria[65536];
-int registradores[33];
+int* memoria;
+int* registradores;
 int PC, IR, neg, zero, carry, overflow;
 struct regTemp RegTemp;
 
@@ -60,13 +60,16 @@ struct regTemp RegTemp;
 /*======================================================================================*/
 int iniciaProcessador(const char* arquivo);
 void itob(int valor, char* string, int quantBits);
-void verificaFlags(void);
+void verificaFlags(Operadores3 op3);
 
 /*======================================================================================*/
 /*                                        FUNCAO MAIN                                   */
 /*======================================================================================*/
 int main(int argc, char const *argv[])
 {
+  /*inicia a memória e o registrador*/
+  registradores = (int*) malloc(4*33);
+  memoria = (int*) malloc(4*65536);
 
   if(argc < 2)
   {
@@ -108,14 +111,14 @@ int main(int argc, char const *argv[])
         printf("ADD\n");
         RegTemp.valor = registradores[op3->ra] + registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case SUB:
         printf("SUB\n");
         RegTemp.valor = registradores[op3->ra] - registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case ZEROS:
@@ -134,7 +137,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] ^ registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -144,7 +147,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] | registradores[op3->rb];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -154,7 +157,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = ~registradores[op3->ra];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -164,7 +167,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] & registradores[op3->rb];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -174,10 +177,9 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] << registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
-        break;
         break; 
 
       case ASR:
@@ -185,18 +187,17 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra] >> registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;  
-        break;
 
       case LSL:
         printf("LSL\n");
         RegTemp.valor = (unsigned int) registradores[op3->ra] << (unsigned int) registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;
@@ -206,7 +207,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = (unsigned int) registradores[op3->ra] >> (unsigned int) registradores[op3->rb];
         RegTemp.destino = op3->rc;
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break;  
@@ -216,7 +217,7 @@ int main(int argc, char const *argv[])
         RegTemp.valor = registradores[op3->ra];
         RegTemp.destino = op3->rc; 
         /*verifica as flags mas carry e overflow sao fixas*/
-        verificaFlags();
+        verificaFlags(NULL);
         carry = 0;
         overflow = 0;
         break; 
@@ -300,9 +301,9 @@ int main(int argc, char const *argv[])
 
       case BEQ:
         printf("BEQ\n");
-        if(registradores[op3->rc] == registradores[op3->ra])
+        if(registradores[op3->ra] == registradores[op3->rb])
         {
-          PC = op3->rb;
+          PC = op3->rc;
           printf("Alteracao ocorrida:\n");
           printf("PC = %d\n", PC);
           printf("\n");
@@ -320,9 +321,9 @@ int main(int argc, char const *argv[])
 
       case BNE:
         printf("BNE\n");
-        if(registradores[op3->rc] != registradores[op3->ra])
+        if(registradores[op3->ra] != registradores[op3->rb])
         {
-          PC = op3->rb;
+          PC = op3->rc;
           printf("Alteracao ocorrida:\n");
           printf("PC = %d\n", PC);
           printf("\n");
@@ -355,7 +356,7 @@ int main(int argc, char const *argv[])
         printf("MULT\n");
         RegTemp.valor = registradores[op3->ra] * registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case DIV:
@@ -367,35 +368,37 @@ int main(int argc, char const *argv[])
         }
         RegTemp.valor = registradores[op3->ra] / registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case MOD:
         printf("MOD\n");
         RegTemp.valor = registradores[op3->ra] % registradores[op3->rb];
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(NULL);
+        carry = 0;
+        overflow = 0;
         break;
 
       case ADDI:
         printf("ADDI\n");
         RegTemp.valor = registradores[op3->ra] + op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case SUBI:
         printf("SUBI\n");
         RegTemp.valor = registradores[op3->ra] - op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case MULTI:
         printf("MULTI\n");
         RegTemp.valor = registradores[op3->ra] * op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case DIVI:
@@ -407,7 +410,7 @@ int main(int argc, char const *argv[])
         }
         RegTemp.valor = registradores[op3->ra] / op3->rb;
         RegTemp.destino = op3->rc;
-        verificaFlags();
+        verificaFlags(op3);
         break;
 
       case LOADD:
@@ -449,6 +452,11 @@ int main(int argc, char const *argv[])
       printf("R%d = %d\n", RegTemp.destino, RegTemp.valor);
       printf("\n");
     }
+    printf("Flags:\n");
+    printf("Overflow: %d\n", overflow);
+    printf("Carry: %d\n", carry);
+    printf("Neg: %d\n", neg);
+    printf("Zero: %d\n\n", zero);
 
     /*Busca a proxima isntrucao*/
     IR = memoria[PC];
@@ -456,7 +464,11 @@ int main(int argc, char const *argv[])
     printf("IR = %s\n", valor);
     PC++;
     printf("PC = %d\n", PC);
- }
+  }
+  printf("HALT encontrado: simulação terminada\n");
+
+  free(memoria);
+  free(registradores);
 
   return 0;
 }
@@ -543,15 +555,50 @@ void itob(int valor, char* string, int quantBits)
 /*VERIFICA FLAGS - FUNCAO QUE VERIFICA AS FLAGS DO REGISTRADOR TEMPORARIO               */
 /*IN: VOID                                                                     OUT: VOID*/
 /*======================================================================================*/
-void verificaFlags(void)
+void verificaFlags(Operadores3 op3)
 {
 
-  /*caso o valor for negativo - bit mais significativo igual 1*/
-  if(RegTemp.valor >> 31 & 1)
+  /*caso o valor for negativo*/
+  if(RegTemp.valor < 0)
     neg = 1;
 
   /*verifica se o valor eh 0*/
   if(RegTemp.valor == 0)
     zero = 1;
+
+  /*verifica se existe carry e overflow caso op3 nao for nulo*/
+  if(op3 != NULL)
+  {
+
+    /*verifica overflow*/
+    overflow = 0;
+    /*verifica o overflow que pode aconter em somas*/
+    if(op3->opcode == ADD || op3->opcode == MULT || op3->opcode == ADDI || op3->opcode == MULTI)
+    {
+      if((registradores[op3->ra] >= 0) && (registradores[op3->rb] >= 0) && (RegTemp.valor < 0))
+        overflow = 1;
+      else if((registradores[op3->ra] < 0) && (registradores[op3->rb] < 0) && (RegTemp.valor >= 0))
+             overflow = 1;
+    }
+
+    /*verifica o overflow que pode acontecer em subtracao*/
+    if(op3->opcode == SUB || op3->opcode == DIV || op3->opcode == SUBI || op3->opcode == DIVI)
+    {
+      if((registradores[op3->ra] >= 0) && (registradores[op3->rb] < 0) && (RegTemp.valor < 0))
+        overflow = 1;
+      else if((registradores[op3->ra] < 0) && (registradores[op3->rb] >= 0) && (RegTemp.valor >= 0))
+             overflow = 1;
+    }
+
+    /*verifica carry*/
+    carry = 0;
+
+    if(registradores[op3->ra] < 0 && registradores[op3->rb] < 0)
+      carry = 1;
+    else if(registradores[op3->ra] < 0 && registradores[op3->rb] < 1 && RegTemp.valor < 0)
+      carry = 1;
+    else if(registradores[op3->ra] < 1 && registradores[op3->rb] < 0 && RegTemp.valor < 0)
+      carry = 1;
+  }
 
 }

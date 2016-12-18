@@ -1,0 +1,5 @@
+lcl r1, 2
+lcl r2, 2
+add r3 r1 r2
+stored r3 [A]
+halt

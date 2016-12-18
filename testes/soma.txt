@@ -1,4 +1,0 @@
-LCL R1 #2
-LCL R2 #2
-ADD R3 R1 R2
-HALT
